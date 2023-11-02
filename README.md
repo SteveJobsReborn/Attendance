@@ -1,15 +1,21 @@
 # Attendance System
 
+# Installation
+- clone the file to your working directory via command:
+```
+git clone https://github.com/SteveJobsReborn/Attendance.git
+```
+
 # Setup Xampp Virtual Host
-- replace the following with your file path
+- replace the following "yourfilepath" with your working directory
 - paste the following code to /xampp/apache/conf/extra/httpd-vhosts.conf :
 ```
 <VirtualHost *:80>
     ServerAdmin attendance.local
-    DocumentRoot "C:/yourfilepathhere/"
+    DocumentRoot "C:/yourfilepath/"
     ServerName attendance.local
     ServerAlias www.yourproject.dev
-    <Directory "C:/yourfilepathhere">
+    <Directory "C:/yourfilepath/">
         AllowOverride All
         Require all granted
     </Directory>
