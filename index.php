@@ -35,46 +35,106 @@ if (isset($_GET['action']) && $_GET['action'] === 'getNames') {
     <title>QR Code Generator</title>
     <style>
         /* Center the content on the page */
-        body, html {
-            height: 100%;
+		body {
+			height: 100%;
+			width: 100%;
+			padding: 0;
             margin: 0;
-            display: flex;
+			background-image: url("https://cdn.eduadvisor.my/institution/xiamen/inst-profile-header-xiamen.jpg");
+			background-size: cover;
+			background-position: center;
+			background-repeat: no-repeat;
+		}
+		.banner {
+			display: flex;
+			block-size: 70px;
+			background-color: #00008B;
+			align-items: left;
+			position: sticky;
+			backdrop-filter: blur(14px);
+			
+		}
+		.page {
+			padding-top: 0;
+			margin-top: 0;
+			height: 100%;
+			width: 100%;
             flex-direction: column;
-            justify-content: center;
+			
+		}
+		.base-component {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			gap: 90px;
+			justify-content: center;
+			margin-block-start: 90px;
+			align-items: stretch;
+			margin-top: 90px;
+			margin-bottom: 90px;
+			margin-left: auto;
+			margin-right: auto;
+			margin-inline: 30px;
+			inline-size: auto;
+			position: relative;
+			
+			
+		}
+		.item-component {
+			height: auto;
+			block-size: auto;
+			text-align: center;
+			width: 650px;
+			border-radius: 16px;
+			box-shadow: 17px 20px 40px rgba(0,0,0,0.21);
+			display: flex;
+			flex-direction: column;
+			padding: 40px;
+			inline-size: 450px;
+			background-color: rgba(255,255,255,0.5);
+			backdrop-filter: blur(14px);
+			
+		}
+		
+		.qr {
+			block-size: 300px;
+			margin-block-start: 20px;/*
+			
             align-items: center;
-            text-align: center; /* Ensure text is centered within the flex item */
-        }
-        h1 {
-            margin: 0;
-            font-size: 2em; /* You can adjust the font size if needed */
-            padding-bottom: 20px; /* Add some space between the title and the QR code */
-        }
-        img {
-            /* Adjust as needed to make the QR code fit well on your page */
-            width: 150px;
-            height: 150px;
-        }
-        /* Ensure the image does not exceed the bounds of the screen */
-        @media (max-width: 160px) {
-            img {
-                width: 100px;
-                height: 100px;
-            }
-        }
+            */ /* Ensure text is centered within the flex item */
+			
+			
+		}
+		
 
     </style>
 </head>
 <body>
-    <h1>Student, Please Scan Here for Attendance!</h1>
-    <!-- Display the QR code -->
-    <img src="data:image/png;base64, <?php echo $qrBase64; ?>" alt="QR Code">
+	<header>
+		<div class = "banner">
+			<img src = "https://www.xmu.edu.my/_upload/tpl/08/9f/2207/template2207/htmlRes/xxde_022.png" alt = "XMUM Logo" >
+		</div>
+	</header>
+	<div class = "page">
+		<div class = "base-component">
+			<div class = "item-component">
+				<div class = "qr">
+					<h1>Student, Please Scan Here for Attendance!</h1>
+					<!-- Display the QR code -->
+					<img src="data:image/png;base64, <?php echo $qrBase64; ?>" alt="QR Code">
+				</div>
+			</div>
+			<div class = "item-component">
+				<!-- The board where names will be displayed -->
+				<div id="board">
+					<h2>Attendance Board</h2>
+					<ul id="nameList"></ul>
+				</div>
+			</div>
+		</div>
+	</div>
 
 
-<!-- The board where names will be displayed -->
-    <div id="board">
-        <h2>Attendance Board</h2>
-        <ul id="nameList"></ul>
-    </div>
 
     <script>
     // Function to update the board
@@ -101,6 +161,6 @@ if (isset($_GET['action']) && $_GET['action'] === 'getNames') {
     // Call updateBoard every 5 seconds to get new names
     setInterval(updateBoard, 5000);
     updateBoard(); // Also update when the page loads
-</script>
+	</script>
 </body>
 </html>
