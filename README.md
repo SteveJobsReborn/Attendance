@@ -6,6 +6,9 @@
 git clone https://github.com/SteveJobsReborn/Attendance.git
 ```
 
+# Prequisities
+- Install Xampp program in your machine via https://www.apachefriends.org/
+
 # Setup Xampp Virtual Host
 - replace the following "yourfilepath" with your working directory
 - paste the following code to /xampp/apache/conf/extra/httpd-vhosts.conf :
