@@ -48,11 +48,12 @@ if (isset($_GET['action']) && $_GET['action'] === 'getNames') {
 		.banner {
 			display: flex;
 			block-size: 70px;
-			background-color: #00008B;
+			background-color: rgba(0, 0, 139, 0.87);
 			align-items: left;
 			position: sticky;
-			backdrop-filter: blur(14px);
-			
+			top: 0;
+			z-index: 9999;
+			backdrop-filter: blur(100px);
 		}
 		.page {
 			padding-top: 0;
@@ -60,7 +61,6 @@ if (isset($_GET['action']) && $_GET['action'] === 'getNames') {
 			height: 100%;
 			width: 100%;
             flex-direction: column;
-			
 		}
 		.base-component {
 			display: flex;
@@ -77,12 +77,10 @@ if (isset($_GET['action']) && $_GET['action'] === 'getNames') {
 			margin-inline: 30px;
 			inline-size: auto;
 			position: relative;
-			
-			
 		}
 		.item-component {
 			height: auto;
-			block-size: auto;
+			block-size: 424px;
 			text-align: center;
 			width: 650px;
 			border-radius: 16px;
@@ -95,26 +93,30 @@ if (isset($_GET['action']) && $_GET['action'] === 'getNames') {
 			backdrop-filter: blur(14px);
 			
 		}
-		
 		.qr {
 			block-size: 300px;
-			margin-block-start: 20px;/*
-			
+			margin-block-start: 50px;			
             align-items: center;
-            */ /* Ensure text is centered within the flex item */
-			
-			
+            /* Ensure text is centered within the flex item */
 		}
+		.List{
+			overflow: auto;
+			block-size: 350px;
+		}
+		@media screen and (max-width: 380px) {
+			.banner, .page{
+				width: 370px;
+			}
+        }
 		
 
     </style>
 </head>
 <body>
-	<header>
-		<div class = "banner">
-			<img src = "https://www.xmu.edu.my/_upload/tpl/08/9f/2207/template2207/htmlRes/xxde_022.png" alt = "XMUM Logo" >
-		</div>
-	</header>
+	<div class = "banner">
+		<img src = "https://www.xmu.edu.my/_upload/tpl/08/9f/2207/template2207/htmlRes/xxde_022.png" alt = "XMUM Logo" >
+	</div>
+	
 	<div class = "page">
 		<div class = "base-component">
 			<div class = "item-component">
@@ -128,7 +130,9 @@ if (isset($_GET['action']) && $_GET['action'] === 'getNames') {
 				<!-- The board where names will be displayed -->
 				<div id="board">
 					<h2>Attendance Board</h2>
-					<ul id="nameList"></ul>
+					<div class = "List">
+						<ul id="nameList"></ul>
+					</div>
 				</div>
 			</div>
 		</div>
