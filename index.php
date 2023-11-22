@@ -49,11 +49,12 @@ if (isset($_GET['action']) && $_GET['action'] === 'getNames') {
 			display: flex;
 			block-size: 70px;
 			background-color: rgba(0, 0, 139, 0.87);
-			align-items: left;
 			position: sticky;
 			top: 0;
 			z-index: 9999;
 			backdrop-filter: blur(100px);
+			gap: 50px;
+			
 		}
 		.page {
 			padding-top: 0;
@@ -95,13 +96,15 @@ if (isset($_GET['action']) && $_GET['action'] === 'getNames') {
 		}
 		.qr {
 			block-size: 300px;
-			margin-block-start: 50px;			
+			margin-block-start: 10px;			
             align-items: center;
             /* Ensure text is centered within the flex item */
 		}
 		.List{
 			overflow: auto;
-			block-size: 350px;
+			block-size: 350px;	
+			text-align: left;
+			font-size: 25px;
 		}
 		@media screen and (max-width: 380px) {
 			.banner, .page{
@@ -115,11 +118,13 @@ if (isset($_GET['action']) && $_GET['action'] === 'getNames') {
 <body>
 	<div class = "banner">
 		<img src = "https://www.xmu.edu.my/_upload/tpl/08/9f/2207/template2207/htmlRes/xxde_022.png" alt = "XMUM Logo" >
+		
 	</div>
 	
 	<div class = "page">
 		<div class = "base-component">
 			<div class = "item-component">
+				<h1>CourseName</h1>
 				<div class = "qr">
 					<h1>Student, Please Scan Here for Attendance!</h1>
 					<!-- Display the QR code -->
@@ -129,7 +134,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'getNames') {
 			<div class = "item-component">
 				<!-- The board where names will be displayed -->
 				<div id="board">
-					<h2>Attendance Board</h2>
+					<h1>Attendance Board</h1>
 					<div class = "List">
 						<ul id="nameList"></ul>
 					</div>
