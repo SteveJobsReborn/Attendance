@@ -3,7 +3,6 @@
 $data = 'localhost/form_page.php';
 // $data = 'https://forms.office.com/Pages/ResponsePage.aspx?id=00dqnpUnl0ueUnixBgYp8QNaw1i-Q7BAvo2qfTNr5Q9UQ01OWEVHTzg3U1AyWUlFRzVHM05KWE9QVy4u';
 
-
 // The API endpoint with the data and size parameters
 $qrApiUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" . urlencode($data);
 
@@ -13,17 +12,43 @@ $qrImage = file_get_contents($qrApiUrl);
 // Encode the image data into base64
 $qrBase64 = base64_encode($qrImage);
 
-if (isset($_GET['action']) && $_GET['action'] === 'getNames') {
-    // Path to the text file that stores names
-    $namesFile = 'names.txt';
 
-    // Load the names already submitted
-    $names = file_exists($namesFile) ? file($namesFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) : [];
+// Define database credentials
+$servername = "localhost";
+$username = "root"; // Replace with your database username
+$password = ""; // Replace with your database password
+$dbname = "attendance";
+
+if (isset($_GET['action']) && $_GET['action'] === 'getNames') {
+    // Create a new database connection
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    // Check the connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Prepare the SQL statement
+    $sql = "SELECT name FROM names";
+    $result = $conn->query($sql);
+
+    $names = [];
+    if ($result->num_rows > 0) {
+        // Output data of each row
+        while($row = $result->fetch_assoc()) {
+            $names[] = $row['name'];
+        }
+    } else {
+        echo "0 results";
+    }
+
+    // Close connection
+    $conn->close();
 
     // Output the names as JSON
     header('Content-Type: application/json');
     echo json_encode($names);
-    exit; // Make sure to terminate the script so it doesn't run the HTML part
+    exit; // Make sure to terminate the script
 }
 ?>
 
@@ -49,12 +74,11 @@ if (isset($_GET['action']) && $_GET['action'] === 'getNames') {
 			display: flex;
 			block-size: 70px;
 			background-color: rgba(0, 0, 139, 0.87);
+			align-items: left;
 			position: sticky;
 			top: 0;
 			z-index: 9999;
 			backdrop-filter: blur(100px);
-			gap: 50px;
-			
 		}
 		.page {
 			padding-top: 0;
@@ -96,15 +120,13 @@ if (isset($_GET['action']) && $_GET['action'] === 'getNames') {
 		}
 		.qr {
 			block-size: 300px;
-			margin-block-start: 10px;			
+			margin-block-start: 50px;			
             align-items: center;
             /* Ensure text is centered within the flex item */
 		}
 		.List{
 			overflow: auto;
-			block-size: 350px;	
-			text-align: left;
-			font-size: 25px;
+			block-size: 350px;
 		}
 		@media screen and (max-width: 380px) {
 			.banner, .page{
@@ -118,13 +140,12 @@ if (isset($_GET['action']) && $_GET['action'] === 'getNames') {
 <body>
 	<div class = "banner">
 		<img src = "https://www.xmu.edu.my/_upload/tpl/08/9f/2207/template2207/htmlRes/xxde_022.png" alt = "XMUM Logo" >
-		
 	</div>
 	
 	<div class = "page">
 		<div class = "base-component">
 			<div class = "item-component">
-				<h1>CourseName</h1>
+			<h1>CourseName</h1>
 				<div class = "qr">
 					<h1>Student, Please Scan Here for Attendance!</h1>
 					<!-- Display the QR code -->
@@ -134,7 +155,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'getNames') {
 			<div class = "item-component">
 				<!-- The board where names will be displayed -->
 				<div id="board">
-					<h1>Attendance Board</h1>
+					<h2>Attendance Board</h2>
 					<div class = "List">
 						<ul id="nameList"></ul>
 					</div>

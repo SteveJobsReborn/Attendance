@@ -1,13 +1,40 @@
-
 <?php
+// Define database credentials
+$servername = "localhost";
+$username = "root"; // Replace with your database username
+$password = ""; // Replace with your database password
+$dbname = "attendance";
+
 // Check if the form has been submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $name = trim($_POST['name']);
-    // Save the name to a text file
-    file_put_contents('names.txt', $name . PHP_EOL, FILE_APPEND);
-    // Redirect back to the index.php or just inform the user
-    header('Location: index.php');
-    exit;
+    // Create a new database connection
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    // Check the connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Trim and escape the input to protect against SQL injection
+    $name = mysqli_real_escape_string($conn, trim($_POST['name']));
+
+    // Prepare the SQL statement
+    $stmt = $conn->prepare("INSERT INTO names (name) VALUES (?)");
+    $stmt->bind_param("s", $name);
+
+    // Execute the prepared statement
+    if ($stmt->execute()) {
+        // Redirect to index.php after successful insertion
+        header('Location: index.php');
+        exit;
+    } else {
+        // Handle error appropriately
+        echo "Error: " . $stmt->error;
+    }
+
+    // Close statement and connection
+    $stmt->close();
+    $conn->close();
 }
 ?>
 
