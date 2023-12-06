@@ -1,6 +1,9 @@
 <?php
+session_start();
+include 'connection.php';
+
 // The data you want to encode in the QR code
-$data = 'localhost/form_page.php';
+$data = 'attend.great-site.net/form_page.php';
 // $data = 'https://forms.office.com/Pages/ResponsePage.aspx?id=00dqnpUnl0ueUnixBgYp8QNaw1i-Q7BAvo2qfTNr5Q9UQ01OWEVHTzg3U1AyWUlFRzVHM05KWE9QVy4u';
 
 // The API endpoint with the data and size parameters
@@ -12,13 +15,6 @@ $qrImage = file_get_contents($qrApiUrl);
 // Encode the image data into base64
 $qrBase64 = base64_encode($qrImage);
 
-
-// Define database credentials
-$servername = "localhost";
-$username = "root"; // Replace with your database username
-$password = ""; // Replace with your database password
-$dbname = "attendance";
-
 if (isset($_GET['action']) && $_GET['action'] === 'getNames') {
     // Create a new database connection
     $conn = new mysqli($servername, $username, $password, $dbname);
@@ -29,7 +25,8 @@ if (isset($_GET['action']) && $_GET['action'] === 'getNames') {
     }
 
     // Prepare the SQL statement
-    $sql = "SELECT name FROM names";
+	$today = date("Y-m-d");
+    $sql = "SELECT name FROM names WHERE attendanceDate = '$today'"; // show attendance for today only
     $result = $conn->query($sql);
 
     $names = [];
@@ -80,6 +77,13 @@ if (isset($_GET['action']) && $_GET['action'] === 'getNames') {
 			z-index: 9999;
 			backdrop-filter: blur(100px);
 		}
+		.admin-icon {
+            position: absolute;
+            top: 10px; /* Adjust top positioning as needed */
+            right: 10px; /* Adjust right positioning as needed */
+            width: 50px; /* Adjust width as needed */
+            height: auto; /* Maintain aspect ratio */
+        }
 		.page {
 			padding-top: 0;
 			margin-top: 0;
@@ -137,9 +141,13 @@ if (isset($_GET['action']) && $_GET['action'] === 'getNames') {
 
     </style>
 </head>
+
 <body>
 	<div class = "banner">
 		<img src = "https://www.xmu.edu.my/_upload/tpl/08/9f/2207/template2207/htmlRes/xxde_022.png" alt = "XMUM Logo" >
+		<a href="management.php" target="_blank">
+		<img src="media/admin.png" alt="Admin Icon" class="admin-icon">
+		</a>
 	</div>
 	
 	<div class = "page">
@@ -156,6 +164,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'getNames') {
 				<!-- The board where names will be displayed -->
 				<div id="board">
 					<h2>Attendance Board</h2>
+					<h3>Date: <?php echo date("Y-m-d"); ?></h3>
 					<div class = "List">
 						<ul id="nameList"></ul>
 					</div>
@@ -163,8 +172,6 @@ if (isset($_GET['action']) && $_GET['action'] === 'getNames') {
 			</div>
 		</div>
 	</div>
-
-
 
     <script>
     // Function to update the board

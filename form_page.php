@@ -1,9 +1,7 @@
 <?php
-// Define database credentials
-$servername = "localhost";
-$username = "root"; // Replace with your database username
-$password = ""; // Replace with your database password
-$dbname = "attendance";
+
+session_start();
+include 'connection.php';
 
 // Check if the form has been submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -19,9 +17,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = mysqli_real_escape_string($conn, trim($_POST['name']));
 
     // Prepare the SQL statement
-    $stmt = $conn->prepare("INSERT INTO names (name) VALUES (?)");
-    $stmt->bind_param("s", $name);
+    $attendanceDate = date("Y-m-d");
+    $checkQuery = "SELECT * FROM names WHERE name = '$name' AND attendanceDate = '$attendanceDate'";
+    $result = $conn->query($checkQuery);
+    $stmt = $conn->prepare("INSERT INTO names (name, attendanceDate) VALUES (?, ?)");
+    $stmt->bind_param("ss", $name, $attendanceDate);
 
+    
+    if ($result && $result->num_rows > 0) {
+        echo "Attendance already submitted for this student on this date.";
+    } else{
     // Execute the prepared statement
     if ($stmt->execute()) {
         // Redirect to index.php after successful insertion
@@ -30,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         // Handle error appropriately
         echo "Error: " . $stmt->error;
+    }
     }
 
     // Close statement and connection
@@ -44,60 +50,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Submit Your Name</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            height: 100vh; /* Full height of the viewport */
-            display: flex;
-            justify-content: center; /* Center horizontally */
-            align-items: center; /* Center vertically */
-        }
-        form {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            display: inline-block;
-        }
-        input[type=text] {
-            padding: 10px;
-            margin-right: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        input[type=submit] {
-            padding: 10px 20px;
-            background-color: #5cb85c;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        input[type=submit]:hover {
-            background-color: #4cae4c;
-        }
-        input[type="submit"]:disabled {
-            background-color: #ccc;
-        }
-
-        .loader {  
-            display: none;
-            vertical-align: middle;
-			width: 20px;
-			height: 20px;
-        }
-    </style>
 </head>
-<body>
+
+<body translate="no" >
+<link rel="stylesheet" href="style.css">
+<div id='stars'></div>
+<div id='stars2'></div>
+<div id='stars3'></div>
+<div id='title'>
     <form method="post" action="form_page.php" id="nameForm">
         <input type="text" name="name" placeholder="Enter your name" required>
         <input type="submit" id="submitBtn" value="Submit">
         <img src="media/loading.gif" alt="Loading" class="loader" id="loader">
     </form>
+</div>
 
     <script>
         document.getElementById('nameForm').onsubmit = function(event) {
